@@ -1,0 +1,25 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    networks:
+      - frontend
+      - backend
+    environment:
+      TZ: ${TZ}
+      WATCHTOWER_CLEANUP: 1
+      WATCHTOWER_LABEL_ENABLE: 1
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${MOUNT_ROOT}/watchtower/config.json:/config.json
+    command: --schedule "0 0 7 * * 5"
+    healthcheck:
+      test: ["CMD", "/watchtower", "--health-check"]
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true
